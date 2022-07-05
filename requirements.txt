@@ -1,0 +1,4 @@
+imutils
+numpy>=1.15.0
+opencv-python>=3.4.10.37
+pyzmq
