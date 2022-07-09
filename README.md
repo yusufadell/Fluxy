@@ -76,20 +76,12 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `yusufadell`, `fluxy`, `WHYUSUF_`, `yusufadell`, `gmail`, `yusufadell.dev`, `Fluxy`, `Webcam and PiCamera Network Streaming with Python`
-
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Built With
 
-* [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
+* [Pyzmq](https://pyzmq.readthedocs.io/)
+* [opencv-python](https://pypi.org/project/opencv-python/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -103,10 +95,10 @@ To get a local copy up and running follow these simple example steps.
 
 This is an example of how to list things you need to use the software and how to install them.
 
-* npm
+* pip packages
 
   ```sh
-  npm install npm@latest -g
+  pip install -r requirements.txt
   ```
 
 ### Installation
@@ -121,13 +113,13 @@ This is an example of how to list things you need to use the software and how to
 3. Install NPM packages
 
    ```sh
-   npm install
+   pip install -r requirements.txt
    ```
 
-4. Enter your API in `config.js`
+4. Initiate network streaming
 
-   ```js
-   const API_KEY = 'ENTER YOUR API';
+   ```sh
+   python stream_logic.py
    ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -188,9 +180,7 @@ Project Link: [https://github.com/yusufadell/fluxy](https://github.com/yusufadel
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+* [yusufadell](https://github.com/yusufadell)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
