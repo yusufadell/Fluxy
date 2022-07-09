@@ -1,11 +1,14 @@
-import cv2
-import zmq
 import base64
+
+import cv2
 import numpy as np
+import zmq
+
+from constants import *
 
 context = zmq.Context()
 footage_socket = context.socket(zmq.SUB)
-footage_socket.bind("tcp://*:5555")
+footage_socket.bind(f"tcp://*:{PORT}")
 footage_socket.setsockopt_string(zmq.SUBSCRIBE, np.unicode(""))
 
 while True:

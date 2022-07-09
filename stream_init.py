@@ -3,9 +3,11 @@ import base64
 import cv2
 import zmq
 
+from constants import *
+
 context = zmq.Context()
 footage_socket = context.socket(zmq.PUB)
-footage_socket.connect("tcp://localhost:5555")
+footage_socket.connect(f"tcp://*:{PORT}")
 
 camera = cv2.VideoCapture(0)  # init the camera
 
