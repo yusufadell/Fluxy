@@ -3,6 +3,8 @@ import time
 from constants import *
 from utils import preview_image
 
+# TODO: add test for camera package
+
 
 class Camera:
 
