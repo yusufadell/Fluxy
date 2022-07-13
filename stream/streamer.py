@@ -1,11 +1,10 @@
 import base64
-import sys
 from dataclasses import dataclass
 
 import cv2
 import zmq
 
-from stream.constants import *
+from constants import *
 
 
 @dataclass
@@ -46,7 +45,7 @@ class Streamer:
     def grab_frame(self, camera):
         while self.footage_socket:
             try:
-                grabbed, frame = camera.read()  # grab the current frame
+                grabbed, frame = camera.read()
                 encoded, buffer = cv2.imencode('.jpg', frame)
                 jpg_as_text = base64.b64encode(buffer)
                 self.footage_socket.send(jpg_as_text)
@@ -60,23 +59,6 @@ class Streamer:
         return f"Streamer({self.server_address}, {self.port}, {self.socket})"
 
 
-def main():
-    port = PORT
-    server_address = SERVER_ADDRESS
-
-    try:
-        if len(sys.argv) > 1:
-            program_name = sys.argv[0]
-            arguments = sys.argv[1:]
-            count = len(arguments)
-            server_address = arguments[0]
-            port = arguments[1]
-    except IndexError as ie:
-        print("Loading default Server Address and Port.")
-
+if __name__ == '__main__':
     streamer = Streamer()
     streamer.start()
-
-
-if __name__ == '__main__':
-    main()

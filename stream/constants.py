@@ -1,3 +1,0 @@
-PORT = '5555'
-SERVER_ADDRESS = 'localhost'
-SOCKET = f"tcp://{SERVER_ADDRESS}:{PORT}"
