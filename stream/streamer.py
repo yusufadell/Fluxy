@@ -3,8 +3,9 @@ from dataclasses import dataclass
 
 import cv2
 import zmq
-
+import typing
 from constants import *
+from camera.Camera import Camera
 
 
 @dataclass
@@ -12,8 +13,9 @@ class Streamer:
     server_address: str = SERVER_ADDRESS
     port: str = PORT
     socket: str = SOCKET
+    camera: typing.Any = Camera()
 
-    def start(self, camera_mode=0):
+    def start(self):
         print(f"Connecting to {self.socket}")
         footage_socket = self.create_context()
         footage_socket.setsockopt_string(zmq.SUBSCRIBE, b"")
@@ -21,8 +23,8 @@ class Streamer:
         self.send_frame(footage_socket)
         self.create_context()
         print("Streaming Started...")
-        camera = cv2.VideoCapture(camera_mode)
-        self.grab_frame(camera)
+        self.camera.start_capture()
+        self.grab_frame(self.camera)
 
     def create_context(self):
         context = zmq.Context()
@@ -45,9 +47,8 @@ class Streamer:
     def grab_frame(self, camera):
         while self.footage_socket:
             try:
-                grabbed, frame = camera.read()
-                encoded, buffer = cv2.imencode('.jpg', frame)
-                jpg_as_text = base64.b64encode(buffer)
+                frame = camera.current_frame.read()
+                jpg_as_text = self._image_to_string(frame)
                 self.footage_socket.send(jpg_as_text)
 
             except KeyboardInterrupt:
