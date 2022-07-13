@@ -21,37 +21,26 @@ class StreamViewer:
     def listen(self):
         """start listening for incoming stream
         """
+        print(f"Listening for stream... port:{self.port} press ctrl+c to exit")
         while self.footage_socket:
             try:
-                frame = self.footage_socket.recv_string()
-                img = base64.b64decode(frame)
-                npimg = np.fromstring(img, dtype=np.uint8)
-                source = cv2.imdecode(npimg, 1)
-                cv2.imshow("Stream", source)
-                cv2.waitKey(1)
-
+                self.decode_frames()
             except KeyboardInterrupt:
                 cv2.destroyAllWindows()
                 break
 
+    def decode_frames(self):
+        frame = self.footage_socket.recv_string()
+        img = base64.b64decode(frame)
+        npimg = np.fromstring(img, dtype=np.uint8)
+        source = cv2.imdecode(npimg, 1)
+        cv2.imshow("Stream", source)
+        cv2.waitKey(1)
 
-def main():
-    port = PORT
-    server_address = SERVER_ADDRESS
-
-    try:
-        if len(sys.argv) > 1:
-            program_name = sys.argv[0]
-            arguments = sys.argv[1:]
-            count = len(arguments)
-            server_address = arguments[0]
-            port = arguments[1]
-    except IndexError as ie:
-        print("Loading default Server Address and Port.")
-
-    stream_viewer = StreamViewer()
-    stream_viewer.listen()
+    def __str__(self):
+        return f'Subsriber rule at port:{self.port}'
 
 
 if __name__ == '__main__':
-    main()
+    streamer = StreamViewer()
+    streamer.listen()
