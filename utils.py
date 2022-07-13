@@ -1,3 +1,4 @@
+import base64
 import io
 
 
@@ -50,9 +51,8 @@ def preview_image(image, name="window", time=1000):
         cv2.destroyAllWindows()
 
 
-def create_save_random_image(file_path='result_image.png'):
-    import numpy as np
-    rgb = np.random.randint(255, size=(900, 800, 3), dtype=np.uint8)
+def image_to_string(self, frame):
     import cv2
-    cv2.imwrite(file_path, rgb)
-    return file_path
+    _, buffer = cv2.imencode('.jpg', frame)
+    jpg_as_text = base64.b64encode(buffer)
+    return jpg_as_text
