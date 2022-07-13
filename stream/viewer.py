@@ -1,5 +1,6 @@
 import base64
 import sys
+import typing
 from dataclasses import dataclass
 
 import cv2
@@ -12,12 +13,10 @@ from constants import *
 @dataclass
 class StreamViewer:
     port: str = PORT
-
-    def __init__(self):
-        context = zmq.Context()
-        self.footage_socket = context.socket(zmq.SUB)
-        self.footage_socket.bind(f'tcp://*:{self.port}')
-        self.footage_socket.setsockopt_string(zmq.SUBSCRIBE, np.unicode(''))
+    context: typing.Any = zmq.Context()
+    footage_socket: typing.Any = context.socket(zmq.SUB)
+    footage_socket.bind(f'tcp://*:{PORT}')
+    footage_socket.setsockopt_string(zmq.SUBSCRIBE, '')
 
     def listen(self):
         """start listening for incoming stream
