@@ -1,3 +1,4 @@
+import argparse
 import base64
 import sys
 import typing
@@ -42,5 +43,16 @@ class StreamViewer:
 
 
 if __name__ == '__main__':
-    streamer = StreamViewer()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-s', '--server', help='IP Address of the server which you want to connect to, default'' is ' + SERVER_ADDRESS, required=True)
+    parser.add_argument(
+        '-p', '--port', help='The port which you want the Streaming Server to use, default'' is ' + PORT, required=False)
+
+    args = parser.parse_args()
+
+    if args.port and args.server:
+        port, addr = args.port, args.server
+
+    streamer = StreamViewer(port=port, server_address=addr)
     streamer.listen()
