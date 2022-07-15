@@ -13,15 +13,32 @@ from constants import *
 
 @dataclass
 class StreamViewer:
+    """
+    Tries to connect to the StreamViewer with supplied server_address and creates a socket for future use.
+    """
     port: str = PORT
+    server_address: str = SERVER_ADDRESS
+    display: bool = True
     context: typing.Any = zmq.Context()
     footage_socket: typing.Any = context.socket(zmq.SUB)
-    footage_socket.bind(f'tcp://*:{PORT}')
-    footage_socket.setsockopt_string(zmq.SUBSCRIBE, '')
+
+    def decode_frames(self):
+        """decode_frames decodes the frames received from the server
+        :return: None
+        """
+        frame = self.footage_socket.recv_string()
+        img = base64.b64decode(frame)
+        npimg = np.fromstring(img, dtype=np.uint8)
+        self.current_frame = cv2.imdecode(npimg, 1)
+        if self.display:
+            cv2.imshow('Stream', self.current_frame)
+            cv2.waitKey(1)
 
     def listen(self):
-        """start listening for incoming stream
+        """start listening for incoming stream frames from the server
         """
+        self.footage_socket.bind(f'tcp://*:{PORT}')
+        self.footage_socket.setsockopt_string(zmq.SUBSCRIBE, '')
         print(f"Listening for stream... port:{self.port} press ctrl+c to exit")
         while self.footage_socket:
             try:
@@ -29,14 +46,6 @@ class StreamViewer:
             except KeyboardInterrupt:
                 cv2.destroyAllWindows()
                 break
-
-    def decode_frames(self):
-        frame = self.footage_socket.recv_string()
-        img = base64.b64decode(frame)
-        npimg = np.fromstring(img, dtype=np.uint8)
-        source = cv2.imdecode(npimg, 1)
-        cv2.imshow("Stream", source)
-        cv2.waitKey(1)
 
     def __str__(self):
         return f'Subsriber rule at port:{self.port}'
