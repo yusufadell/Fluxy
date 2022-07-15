@@ -1,30 +1,43 @@
 import argparse
 import base64
+import typing
 from dataclasses import dataclass
 
 import cv2
 import zmq
-import typing
-from constants import *
 from camera.Camera import Camera
+from constants import *
+from utils import image_to_string
 
 
 @dataclass
 class Streamer:
-    server_address: str = SERVER_ADDRESS
+    """
+    Tries to connect to the StreamViewer with supplied server_address and creates a socket for future use.
+
+    :param server_address: Address of the computer on which the StreamViewer is running, default is `localhost`
+    :param port: Port which will be used for sending the stream
+    """
+
     port: str = PORT
+    server_address: str = SERVER_ADDRESS
     socket: str = SOCKET
     camera: typing.Any = Camera()
+    camera.start_capture()
 
     def start(self):
+        """
+        Starts sending the stream to the Viewer.
+        Creates a camera, takes a image frame converts the frame to string and sends the string across the network
+        :return: None
+        """
         print(f"Connecting to {self.socket}")
         footage_socket = self.create_context()
-        footage_socket.setsockopt_string(zmq.SUBSCRIBE, b"")
+        footage_socket.setsockopt_string(zmq.SUBSCRIBE, "")
         print("Connected to server")
         self.send_frame(footage_socket)
         self.create_context()
         print("Streaming Started...")
-        self.camera.start_capture()
         self.grab_frame(self.camera)
 
     def create_context(self):
@@ -34,6 +47,11 @@ class Streamer:
         return footage_socket
 
     def send_frame(self, footage_socket):
+        """send_frame sends the frame to the server
+
+        :param footage_socket: Socket to which the frame will be sent 
+        :type footage_socket: zmq.Socket 
+        """
         while True:
             try:
                 frame = footage_socket.recv_string()
@@ -46,10 +64,15 @@ class Streamer:
                 break
 
     def grab_frame(self, camera):
+        """grab_frame takes a frame from the camera and sends it to the server
+
+        :param camera: Camera object from which the frame will be taken
+        :type camera: Camera
+        """
         while self.footage_socket:
             try:
                 frame = camera.current_frame.read()
-                jpg_as_text = self._image_to_string(frame)
+                jpg_as_text = image_to_string(frame)
                 self.footage_socket.send(jpg_as_text)
 
             except KeyboardInterrupt:
@@ -58,7 +81,12 @@ class Streamer:
                 break
 
     def __str__(self):
-        return f"Streamer({self.server_address}, {self.port}, {self.socket})"
+        """__str__ returns the string representation of the object
+
+        :return: String representation of the object
+        :rtype: str
+        """
+        return f'Subsriber rule at port:{self.port}'
 
 
 if __name__ == '__main__':
