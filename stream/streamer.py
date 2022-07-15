@@ -1,3 +1,4 @@
+import argparse
 import base64
 from dataclasses import dataclass
 
@@ -61,5 +62,11 @@ class Streamer:
 
 
 if __name__ == '__main__':
-    streamer = Streamer()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-p', '--port', help='The port which you want the Streaming Viewer to use, default'' is ' + PORT, required=False)
+    args = parser.parse_args()
+    if args.port:
+        port = args.port
+    streamer = Streamer(port=port)
     streamer.start()
